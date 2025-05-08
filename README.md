@@ -100,17 +100,11 @@ git push origin feature/AmazingFeature
 ```
 5. Ouvrir une Pull Request
 
-## 📝 License
-
-Ce projet est sous licence MIT - voir le fichier [LICENSE.md](LICENSE.md) pour plus de détails.
-
 ## 🔗 API Backend
 
-Cette application se connecte à une API REST développée avec Spring Boot. Le repository du backend est disponible ici : [lien-vers-repo-backend]
+Cette application se connecte à une API REST développée avec Spring Boot. 
+Le repository du backend est disponible ici : https://github.com/RobinsonNdeckyDev/api-biblio-fulgence-app.git
 
-## 👥 Auteurs
-
-- **Votre Nom** - *Développeur principal* - [VotreProfil](https://github.com/VotreProfil)
 
 ## 🙏 Remerciements
 
