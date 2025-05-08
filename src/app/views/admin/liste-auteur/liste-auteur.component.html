@@ -1,0 +1,350 @@
+<div class="mb-3">
+    <p class="text-start font-medium">
+        Liste des auteurs
+    </p>
+</div>
+
+<div class="mb-4 flex justify-between">
+    <button class="bg-amber-500 text-white font-medium px-8 py-1 rounded shadow" (click)="openAddModal()">
+        Ajouter un auteur
+    </button>
+
+    <div class="border rounded overflow-hidden">
+        <form (submit)="searchAuteur($event)" class="flex items-center">
+            <div class="flex items-center w-full">
+                <span class="px-3 text-gray-500">
+                    <i class="pi pi-search"></i>
+                </span>
+                <input type="text"
+                       [(ngModel)]="searchTerm"
+                       name="searchTerm"
+                       class="block w-full p-2 border-0 focus:ring-0 focus:outline-none"
+                       placeholder="Rechercher par nom"
+                       (input)="searchAuteur($event)">
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card bg-white py-4 px-5 mt-6 shadow rounded">
+    <p-table
+        [value]="tabAuteur"
+        [paginator]="true"
+        [rows]="5"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        styleClass="p-datatable-striped my-8"
+    >
+        <ng-template pTemplate="header">
+            <tr class="bg-[#2C3E50] text-white">
+                <th class="w-[16%]">Prénom</th>
+                <th class="w-[16%]">Nom</th>
+                <th class="w-[20%]">Email</th>
+                <th class="w-[16%]">Téléphone</th>
+                <th class="w-[16%]">Adresse</th>
+                <th class="w-[16%] text-center">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-auteur>
+            <tr class="hover:bg-gray-50">
+                <td>{{ auteur.prenom }}</td>
+                <td>{{ auteur.nom }}</td>
+                <td>{{ auteur.email }}</td>
+                <td>{{ auteur.telephone}}</td>
+                <td>{{ auteur.adresse }}</td>
+                <td>
+                    <div class="flex gap-2">
+                        <button
+                            class="me-4" (click)="openViewModal(auteur)"
+                            style="width:40px; height:40px; border-radius:50%; padding:5px; background-color: #2C3E50;" >
+                            <i class="pi pi-eye text-white"></i>
+                        </button>
+                        <button
+                            class="me-4" (click)="openEditModal(auteur)"
+                            style="width:40px; height:40px; border-radius:50%; padding:5px; background-color: #E67E22;" >
+                            <i class="pi pi-pencil text-white"></i>
+                        </button>
+                        <button
+                            class="me-4" (click)="deleteAuteur(auteur)"
+                            style="width:40px; height:40px; border-radius:50%; padding:5px; background-color: #E67E22;" class="">
+                            <i class="pi pi-trash text-white"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal de Ajout -->
+<p-dialog
+    [(visible)]="addModalVisible"
+    [header]="'Ajout d\'un auteur'"
+    [modal]="true"
+    [style]="{width: '700px'}"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="p-1"
+>
+    <div class="">
+        <form [formGroup]="auteurFormAdd" (ngSubmit)="onAddAuteur()" class="space-y-4">
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="">
+                    <div class="form-group mb-3">
+                        <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input type="text"
+                               id="prenom"
+                               formControlName="prenom"
+                               placeholder="Moussa"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text"
+                               id="nom"
+                               formControlName="nom"
+                               placeholder="Ndiaye"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email"
+                               id="email"
+                               formControlName="email"
+                               placeholder="moussaNdiaye@gmail.com"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                </div>
+                <div class="">
+                    <div class="form-group mb-3">
+                        <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+                        <input type="text"
+                               id="adresse"
+                               formControlName="adresse"
+                               placeholder="Dakar"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="tel"
+                               id="telephone"
+                               formControlName="telephone"
+                               placeholder="764563738"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <input type="password"
+                               id="password"
+                               formControlName="password"
+                               placeholder="motDepasse"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea type="text"
+                       id="description"
+                       formControlName="description"
+                       placeholder="description"
+                       rows="3"
+                       class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="photoProfil" class="block text-sm font-medium text-gray-700">Photo de profil</label>
+                <input type="file"
+                       id="photoProfil"
+
+                       class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-10">
+                <button type="button"
+                        (click)="addModalVisible = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Annuler
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-amber-500 border border-transparent rounded-md hover:bg-amber-700">
+                    Ajouter
+                </button>
+            </div>
+        </form>
+    </div>
+</p-dialog>
+
+<!-- Modal de visualisation -->
+<p-dialog
+    [(visible)]="viewModalVisible"
+    [header]="'Détails auteur'"
+    [modal]="true"
+    [style]="{width: '700px'}"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass=""
+>
+    <div class="" *ngIf="selectedAuteur">
+        <div class="mb-4">
+            <h3 class="text-lg font-bold text-center text-amber-500">Informations de l'auteur</h3>
+
+            <div class="grid md:grid-cols-2 mt-5">
+                <div class="">
+                    @if (selectedAuteur.photoProfil) {
+                        <div class="flex justify-center items-center">
+                            <img [src]="selectedAuteur.photoProfil" alt="Photo de profil" class="rounded-full h-48 w-48 object-cover border-2 border-amber-500 ">
+                        </div>
+                    } @else {
+                        <div class="flex justify-center items-center">
+                        <img src="assets/images/profils/prf8.jpg" alt="Photo de profil par défaut" class="rounded-full h-48 w-48 object-cover border-2 border-amber-500">
+                        </div>
+                    }
+                </div>
+                <div class="">
+                    <div class="flex mb-3">
+                        <span class="font-medium me-2 text-amber-500">Prénom:</span>
+                        <span class="font-light">{{selectedAuteur.prenom}}</span>
+                    </div>
+                    <div class="flex mb-3">
+                        <span class="font-medium me-2 text-amber-500">Nom:</span>
+                        <span class="font-light">{{selectedAuteur.nom}}</span>
+                    </div>
+                    <div class="flex mb-3">
+                        <span class="font-medium me-2 text-amber-500">Email:</span>
+                        <span class="font-light">{{selectedAuteur.email}}</span>
+                    </div>
+                    <div class="flex mb-3">
+                        <span class="font-medium me-2 text-amber-500">Adresse:</span>
+                        <span class="font-light">{{selectedAuteur.adresse}}</span>
+                    </div>
+                    <div class="flex mb-3">
+                        <span class="font-medium me-2 text-amber-500">Téléphone:</span>
+                        <span class="font-light">{{selectedAuteur.telephone}}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="font-medium me-2 text-amber-500">Role:</span>
+                        <span class="font-light">{{selectedAuteur.role}}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex justify-end space-x-3 mt-4">
+            <button type="button"
+                    (click)="closeViewModal()"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                Fermer
+            </button>
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Modal d'édition -->
+<p-dialog
+    [(visible)]="editModalVisible"
+    [header]="'Modifier un auteur'"
+    [modal]="true"
+    [style]="{width: '700px'}"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass=""
+>
+    <div class="">
+        <form [formGroup]="auteurFormUpdate" (ngSubmit)="onUpdateAuteur()" class="space-y-4">
+
+            <div class="grid md:grid-cols-2 gap-5">
+                <div class="">
+                    <div class="form-group mb-3">
+                        <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input type="text"
+                               id="prenom"
+                               formControlName="prenom"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                        <input type="text"
+                               id="nom"
+                               formControlName="nom"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email"
+                               id="email"
+                               formControlName="email"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                </div>
+                <div class="">
+                    <div class="form-group mb-3">
+                        <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+                        <input type="text"
+                               id="adresse"
+                               formControlName="adresse"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone</label>
+                        <input type="tel"
+                               id="telephone"
+                               formControlName="telephone"
+                               class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <div class="relative">
+                            <input [type]="showPassword ? 'text' : 'password'"
+                                   id="password"
+                                   formControlName="password"
+                                   placeholder="Nouveau mot de passe"
+                                   class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 pr-10">
+                            <button type="button"
+                                    (click)="togglePasswordVisibility()"
+                                    class="absolute inset-y-0 right-0 mt-2 pr-3 flex items-center text-gray-500 hover:text-amber-500">
+                                <i class="pi" [ngClass]="showPassword ? 'pi-eye-slash' : 'pi-eye'"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">Laissez vide pour conserver le mot de passe actuel</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="photoProfil" class="block text-sm font-medium text-gray-700">Photo de profil</label>
+                <input type="file"
+                       id="photoProfil"
+                       class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea type="text"
+                       id="description"
+                       formControlName="description"
+                       rows="3"
+                       class="block w-full p-2 mt-2 rounded border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-3 mt-10">
+                <button type="button"
+                        (click)="editModalVisible = false"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Annuler
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-amber-500 border border-transparent rounded-md hover:bg-amber-700">
+                    Enregistrer
+                </button>
+            </div>
+        </form>
+    </div>
+</p-dialog>
+

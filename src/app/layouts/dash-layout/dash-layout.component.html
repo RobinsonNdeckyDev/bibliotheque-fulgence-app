@@ -1,0 +1,95 @@
+<div class=" m-0 flex min-h-screen relative">
+
+    <!-- sidebar dash -->
+    <div class="hidden p-0 md:w-[18%] md:block min-h-screen" [ngClass]="{'hiddenSide': !isSidebarVisible}">
+        <div class="sidebar flex flex-col h-full bg-[#2C3E50] shadow">
+            <div class="flex justify-center logo items-center p-3 shadow border-b-2 border-[#ECF0F1]">
+                <a class="flex justify-center items-center">
+                    <i class="pi pi-book text-[#E67E22]"></i>
+                    <span class="font-bold text-[#ECF0F1] ml-3">Bibliothéque</span>
+                </a>
+            </div>
+            <ul class="flex flex-col mb-auto overflow-hidden px-3 mt-5 ">
+                @for (menu of MenuItems; track $index) {
+                <li class="my-1 py-1 text-[#ECF0F1] px-3 rounded hover:bg-[#E67E22] hover:text-white transition-all duration-200"
+                    routerLinkActive="active-menu"
+                    [routerLinkActiveOptions]="{ exact: true }">
+                    <a [routerLink]="menu.route" class="flex items-center w-full">
+                        <i [class]="menu.icon"></i>
+                        <span class="ml-3">{{ menu.title }}</span>
+                    </a>
+                </li>
+                }
+            </ul>
+            <div class="flex justify-center items-center border-t-2 border-[#ECF0F1] p-4">
+                <button class="text-[#ECF0F1] m-0" (click)="logout()">
+                    <i class="pi pi-sign-out text-[#E67E22]"></i>
+                    <span class="ml-3">Se déconnecter</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- main dashboard content -->
+    <main class="main w-full md:w-[82%] h-screen overflow-y-scroll"  [ngClass]="{'fullWidth': !isSidebarVisible}">
+        <!-- navbar dash -->
+        <div class="navbar sticky top-0 bg-white z-50">
+            <header class="py-2 shadow px-3 border-b-2 border-[#2C3E50]">
+                <div class="">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="pi pi-align-left me-3 text-[#E67E22] cursor-pointer" (click)="toggleSidebar()"></i>
+                            <a class="link-body-emphasis nav-link fw-bold">
+                                Dashboard
+                            </a>
+                        </div>
+
+                        <div class="flex items-center">
+                            <div class="relative dropdown-container">
+                                <!-- Bouton du dropdown -->
+                                <div (click)="toggleDropdown()"
+                                     class="border border-[#ECF0F1] flex justify-between items-center py-1 px-2 rounded cursor-pointer">
+                                    <span class="mx-2 fw-bold" *ngIf="infoUser">
+                                        {{ infoUser.prenom }} {{ infoUser.nom }}
+                                    </span>
+                                    <span class="mx-2 fw-bold" *ngIf="!infoUser">
+                                        <p class="">User Test</p>
+                                    </span>
+                                    <i class="pi" [class.pi-chevron-down]="!isDropdownOpen" [class.pi-chevron-up]="isDropdownOpen"></i>
+                                </div>
+
+                                <!-- Menu dropdown -->
+                                <div *ngIf="isDropdownOpen"
+                                     class="absolute right-0 top-12 bg-white p-2 rounded-lg shadow-md min-w-[200px]"
+                                     [@slideInOut]>
+                                    <ul class="font-light">
+                                        <li class="hover:bg-[#E67E22] py-1 hover:text-white hover:rounded px-2 my-2">
+                                            <a class="block w-full" routerLink="/">
+                                                <i class="pi pi-bell mr-2"></i>Notifications
+                                            </a>
+                                        </li>
+                                        <li class="hover:bg-[#E67E22] py-1 hover:text-white hover:rounded px-2 my-2">
+                                            <a class="block w-full" routerLink="/profil">
+                                                <i class="pi pi-user mr-2"></i>Mon profil
+                                            </a>
+                                        </li>
+                                        <hr class="border border-[#E67E22] my-2">
+                                        <li class="hover:bg-[#E67E22] py-1 hover:text-white hover:rounded px-2 my-2">
+                                            <a class="block w-full" (click)="logout()">
+                                                <i class="pi pi-sign-out mr-2"></i>Se Déconnecter
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="mainContainer p-3">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+
+</div>

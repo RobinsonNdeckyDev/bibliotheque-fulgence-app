@@ -1,0 +1,50 @@
+
+.fullWidth{
+    width: 100% !important;
+}
+
+.hiddenSide{
+    transition: all 2s ease-in-out;
+    width: 4%;
+
+    .logo{
+        padding: 17px 0;
+    }
+
+    .logo span{
+        display: none;
+        padding: 0 5px;
+    }
+
+    ul span{
+        display: none !important;
+    }
+
+    button span{
+        display: none;
+    }
+
+    li{
+        border: 1px solid whitesmoke;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    li a{
+        margin: 0 !important;
+    }
+
+}
+
+.active-menu {
+    background-color: rgb(255, 251, 235);
+    border: 1px solid rgb(255, 251, 235);
+    color: rgb(245, 158, 11) !important;
+}
+
+.active-menu a,
+.active-menu i,
+.active-menu span {
+    color: rgb(245, 158, 11) !important;
+}

@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@plugin "tailwindcss-primeui";
+@import "primeicons/primeicons.css";
+@import "bootstrap-icons/font/bootstrap-icons.min.css";
+
+/* Palette de couleurs principale */
+:root {
+    --primary: #2C3E50;    /* Bleu marine foncé */
+    --secondary: #E67E22;  /* Orange chaleureux */
+    --accent: #ECF0F1;    /* Gris très clair */
+    --text-light: #FFFFFF;
+    --text-dark: #2C3E50;
+}
+
+/* Styles globaux */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--accent);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button{
+    cursor: pointer;
+}
+

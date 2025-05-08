@@ -1,0 +1,207 @@
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête avec recherche -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <h2 class="text-2xl font-bold text-[#2C3E50]">Mon Dashboard</h2>
+        
+        <div class="flex items-center gap-4 w-full md:w-auto">
+            <button (click)="openAddModal()"
+                    class="bg-[#E67E22] hover:bg-[#D35400] text-white font-medium px-6 py-2 rounded-lg shadow transition-colors">
+                <i class="pi pi-plus mr-2"></i>
+                Ajouter un livre
+            </button>
+
+            <div class="relative flex-1 md:w-64">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <i class="pi pi-search text-gray-400"></i>
+                </span>
+                <input type="text"
+                       [(ngModel)]="searchTerm"
+                       (input)="filterLivres()"
+                       class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#E67E22]"
+                       placeholder="Rechercher un livre...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600">Total Livres</p>
+                    <h2 class="text-3xl font-bold text-[#2C3E50]">{{ totalLivres }}</h2>
+                </div>
+                <i class="pi pi-book text-4xl text-[#E67E22]"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600">Total Pages</p>
+                    <h2 class="text-3xl font-bold text-[#2C3E50]">{{ totalPages }}</h2>
+                </div>
+                <i class="pi pi-file text-4xl text-[#E67E22]"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table des livres -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <p-table [value]="filteredLivres" 
+                [paginator]="true" 
+                [rows]="5"
+                [showCurrentPageReport]="true"
+                [tableStyle]="{ 'min-width': '50rem' }"
+                styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+                <tr class="bg-[#2C3E50] text-white">
+                    <th class="w-[25%]">Titre</th>
+                    <th class="w-[20%]">ISBN</th>
+                    <th class="w-[15%]">Pages</th>
+                    <th class="w-[20%]">Langue</th>
+                    <th class="w-[20%] text-center">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-livre>
+                <tr class="hover:bg-gray-50">
+                    <td>{{ livre.titre }}</td>
+                    <td>{{ livre.isbn }}</td>
+                    <td>{{ livre.nbrPage }}</td>
+                    <td>{{ livre.langue }}</td>
+                    <td>
+                        <div class="flex justify-center gap-2">
+                            <button pButton 
+                                    icon="pi pi-eye" 
+                                    class="p-button-rounded p-button-sm p-button-info"
+                                    (click)="viewLivre(livre)">
+                            </button>
+                            <button pButton 
+                                    icon="pi pi-pencil" 
+                                    class="p-button-rounded p-button-sm p-button-warning"
+                                    (click)="editLivre(livre)">
+                            </button>
+                            <button pButton 
+                                    icon="pi pi-trash" 
+                                    class="p-button-rounded p-button-sm p-button-danger"
+                                    (click)="deleteLivre(livre.id)">
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" class="text-center py-4">
+                        Aucun livre trouvé
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <!-- Modal d'ajout -->
+    <p-dialog header="Ajouter un livre" 
+              [(visible)]="addModalVisible" 
+              [modal]="true"
+              [style]="{width: '450px'}"
+              [draggable]="false"
+              [resizable]="false">
+        <form [formGroup]="livreFormAdd" (ngSubmit)="onAddLivre()" class="p-fluid">
+            <div class="field mb-4">
+                <label for="titre" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                <input type="text" id="titre" pInputText formControlName="titre" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+                <input type="text" id="nom" pInputText formControlName="nom" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="isbn" class="block text-sm font-medium text-gray-700 mb-2">ISBN</label>
+                <input type="text" id="isbn" pInputText formControlName="isbn" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="langue" class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                <input type="text" id="langue" pInputText formControlName="langue" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="nbrePage" class="block text-sm font-medium text-gray-700 mb-2">Nombre de pages</label>
+                <input type="number" id="nbrePage" pInputText formControlName="nbrePage" class="w-full">
+            </div>
+        </form>
+        <ng-template pTemplate="footer">
+            <button pButton type="button" label="Annuler" class="p-button-text" (click)="closeAddModal()"></button>
+            <button pButton type="button" label="Ajouter" (click)="onAddLivre()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Modal de visualisation -->
+    <p-dialog header="Détails du livre" 
+              [(visible)]="viewModalVisible" 
+              [modal]="true"
+              [style]="{width: '450px'}"
+              [draggable]="false"
+              [resizable]="false">
+        <div class="p-4" *ngIf="selectedLivre">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-[#2C3E50] mb-6">{{ selectedLivre.titre }}</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600 text-sm">ISBN</p>
+                        <p class="font-medium">{{ selectedLivre.isbn }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm">Nom</p>
+                        <p class="font-medium">{{ selectedLivre.nom }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm">Langue</p>
+                        <p class="font-medium">{{ selectedLivre.langue }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm">Pages</p>
+                        <p class="font-medium">{{ selectedLivre.nbrPage }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton type="button" label="Fermer" class="p-button-text" (click)="closeViewModal()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <!-- Modal de modification -->
+    <p-dialog header="Modifier le livre" 
+              [(visible)]="editModalVisible" 
+              [modal]="true"
+              [style]="{width: '450px'}"
+              [draggable]="false"
+              [resizable]="false">
+        <form [formGroup]="livreFormUpdate" (ngSubmit)="onUpdateLivre()" class="p-fluid">
+            <div class="field mb-4">
+                <label for="titre" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                <input type="text" id="titre" pInputText formControlName="titre" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+                <input type="text" id="nom" pInputText formControlName="nom" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="isbn" class="block text-sm font-medium text-gray-700 mb-2">ISBN</label>
+                <input type="text" id="isbn" pInputText formControlName="isbn" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="langue" class="block text-sm font-medium text-gray-700 mb-2">Langue</label>
+                <input type="text" id="langue" pInputText formControlName="langue" class="w-full">
+            </div>
+            <div class="field mb-4">
+                <label for="nbrePage" class="block text-sm font-medium text-gray-700 mb-2">Nombre de pages</label>
+                <input type="number" id="nbrePage" pInputText formControlName="nbrePage" class="w-full">
+            </div>
+        </form>
+        <ng-template pTemplate="footer">
+            <button pButton type="button" label="Annuler" class="p-button-text" (click)="closeEditModal()"></button>
+            <button pButton type="button" label="Mettre à jour" (click)="onUpdateLivre()"></button>
+        </ng-template>
+    </p-dialog>
+</div>

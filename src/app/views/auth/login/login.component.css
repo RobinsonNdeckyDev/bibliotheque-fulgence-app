@@ -1,0 +1,36 @@
+.login-biblio {
+    background-image: url('/assets/banners/biblio2.jpg');
+    background-size: cover;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-biblio::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 62, 80, 0.288); /* Overlay semi-transparent avec la couleur primary */
+    z-index: 1;
+}
+
+.login-biblio > div:not(.absolute) {
+    z-index: 2;
+    position: relative;
+}
+
+input:disabled {
+    background-color: var(--accent);
+    cursor: not-allowed;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

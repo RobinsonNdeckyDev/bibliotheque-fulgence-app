@@ -1,0 +1,81 @@
+<div class="mb-3">
+    <p class="text-start font-medium">
+        Liste des livres
+    </p>
+</div>
+
+<div class="mb-4 flex justify-end">
+
+    <div class="border rounded overflow-hidden">
+        <form (submit)="searchLivre($event)" class="flex items-center">
+            <div class="flex items-center w-full">
+                <span class="px-3 text-gray-500">
+                    <i class="pi pi-search"></i>
+                </span>
+                <input type="text"
+                       [(ngModel)]="searchTerm"
+                       name="searchTerm"
+                       class="block w-full p-2 border-0 focus:ring-0 focus:outline-none"
+                       placeholder="Rechercher par titre"
+                       (input)="searchLivre($event)">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card bg-white py-4 px-5 mt-6 shadow rounded">
+    <p-dataView #dv [value]="tabLivre" [rows]="9" [paginator]="true"
+                [layout]="'grid'"
+                [filterBy]="'titre'"
+                [sortField]="'titre'"
+                [sortOrder]="1">
+        <ng-template pTemplate="grid" let-livre>
+            <div class="col-12 sm:col-6 lg:col-4 xl:col-3 p-2">
+                <div class="bg-white p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <!-- Image du livre -->
+                    <div class="relative mb-4">
+                        <div class="relative mb-4">
+                            <img [src]="'assets/images/book.jpg'"
+                                 [alt]="livre.titre"
+                                 class="w-full h-64 object-contain bg-[#ECF0F1] rounded-md p-4">
+                             
+                            <!-- Actions -->
+                            <div class="absolute top-2 right-2 flex gap-2">
+                                <button pButton icon="pi pi-eye" 
+                                        class="p-button-rounded p-button-sm p-button-info"
+                                        >
+                                        <!-- (click)="viewLivre(livre)" -->
+                                </button>
+                                <button pButton icon="pi pi-pencil" 
+                                        class="p-button-rounded p-button-sm p-button-warning"
+                                        >
+                                        <!-- (click)="editLivre(livre)" -->
+                                </button>
+                                <button pButton icon="pi pi-trash" 
+                                        class="p-button-rounded p-button-sm p-button-danger"
+                                        >
+                                        <!-- (click)="deleteLivre(livre.id)" -->
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Informations du livre -->
+                        <div class="text-center mt-4">
+                            <h3 class="text-lg font-semibold text-[#2C3E50] mb-2">{{ livre.titre }}</h3>
+                            <p class="text-sm text-gray-600">Par {{ livre.auteur?.prenom }} {{ livre.auteur?.nom }}</p>
+                            <p class="text-xs text-gray-500 mt-1">ISBN: {{ livre.isbn }}</p>
+                            <div class="flex items-center justify-center gap-2 mt-2">
+                                <span class="bg-[#ECF0F1] text-[#2C3E50] text-xs px-2 py-1 rounded">
+                                    {{ livre.langue }}
+                                </span>
+                                <span class="bg-[#ECF0F1] text-[#2C3E50] text-xs px-2 py-1 rounded">
+                                    {{ livre.nbrPage }} pages
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataView>
+</div>
