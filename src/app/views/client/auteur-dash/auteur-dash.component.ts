@@ -14,8 +14,8 @@ import { Livre } from '../../../core/models/livre';
     selector: 'app-auteur-dash',
     standalone: true,
     imports: [
-        CommonModule, 
-        ButtonModule, 
+        CommonModule,
+        ButtonModule,
         TableModule,
         DialogModule,
         FormsModule,
@@ -48,7 +48,7 @@ export class AuteurDashComponent implements OnInit {
             titre: ['', Validators.required],
             isbn: ['', Validators.required],
             langue: ['', Validators.required],
-            nbrePage: ['', Validators.required],
+            nbrePage: ['', [Validators.required, Validators.min(1)]],
             nom: ['', Validators.required]
         });
 
@@ -56,7 +56,7 @@ export class AuteurDashComponent implements OnInit {
             titre: ['', Validators.required],
             isbn: ['', Validators.required],
             langue: ['', Validators.required],
-            nbrePage: ['', Validators.required],
+            nbrePage: ['', [Validators.required, Validators.min(1)]],
             nom: ['', Validators.required]
         });
     }
@@ -89,7 +89,7 @@ export class AuteurDashComponent implements OnInit {
     filterLivres() {
         if (this.searchTerm && this.searchTerm.trim() !== '') {
             const searchTermLower = this.searchTerm.toLowerCase();
-            this.filteredLivres = this.livres.filter(livre => 
+            this.filteredLivres = this.livres.filter(livre =>
                 livre.titre.toLowerCase().includes(searchTermLower) ||
                 livre.nom.toLowerCase().includes(searchTermLower) ||
                 livre.isbn.toString().includes(searchTermLower)
@@ -107,36 +107,50 @@ export class AuteurDashComponent implements OnInit {
     onAddLivre() {
         if (this.livreFormAdd.valid) {
             const idAuteur = this.authService.getCurrentUser()?.id;
-            console.log("id auteur: ", idAuteur);
 
-            if (idAuteur) {
-                // Structure le livre comme dans le composant liste-livre
-                const newLivre: Livre = {
-                    titre: this.livreFormAdd.value.titre,
-                    auteurId: idAuteur, // Important : utiliser auteurId comme dans liste-livre
-                    isbn: this.livreFormAdd.value.isbn,
-                    langue: this.livreFormAdd.value.langue,
-                    nbrePage: this.livreFormAdd.value.nbrePage,
-                    nom: this.livreFormAdd.value.nom,
-                };
-
-                console.log("newLivre à ajouter:", newLivre);
-
-                this.livreService.addLivre(newLivre).subscribe({
-                    next: (response) => {
-                        this.messageService.showSuccess('Livre ajouté avec succès');
-                        this.loadLivres();
-                        this.addModalVisible = false;
-                        this.livreFormAdd.reset();
-                    },
-                    error: (error) => {
-                        console.error('Erreur lors de l\'ajout du livre:', error);
-                        this.messageService.showError('Erreur lors de l\'ajout du livre');
-                    }
-                });
-            } else {
+            if (!idAuteur) {
                 this.messageService.showError('Session invalide');
+                return;
             }
+
+            // Créer l'objet avec les types corrects
+            const newLivre = {
+                titre: String(this.livreFormAdd.value.titre).trim(),
+                nom: String(this.livreFormAdd.value.titre).trim(), // Même valeur que le titre
+                isbn: Math.floor(Number(this.livreFormAdd.value.isbn)), // S'assurer que c'est un entier
+                langue: String(this.livreFormAdd.value.langue).trim(),
+                nbrePage: Math.max(1, Math.floor(Number(this.livreFormAdd.value.nbrePage))), // Au moins 1 page
+                auteurId: idAuteur
+            };
+
+            // Validation supplémentaire
+            if (isNaN(newLivre.isbn) || isNaN(newLivre.nbrePage)) {
+                this.messageService.showError('ISBN et nombre de pages doivent être des nombres valides');
+                return;
+            }
+
+            // Log de debug
+            console.log('Données envoyées:', JSON.stringify(newLivre));
+
+            this.livreService.addLivre(newLivre).subscribe({
+                next: (response) => {
+                    console.log('Réponse du serveur:', response);
+                    this.messageService.showSuccess('Livre ajouté avec succès');
+                    this.loadLivres();
+                    this.addModalVisible = false;
+                    this.livreFormAdd.reset();
+                },
+                error: (error) => {
+                    console.error('Erreur détaillée:', error);
+                    let errorMessage = 'Erreur lors de l\'ajout du livre';
+
+                    if (error.error && error.error.message) {
+                        errorMessage += ': ' + error.error.message;
+                    }
+
+                    this.messageService.showError(errorMessage);
+                }
+            });
         } else {
             this.messageService.showError('Veuillez remplir tous les champs requis');
         }
@@ -176,11 +190,17 @@ export class AuteurDashComponent implements OnInit {
 
     onUpdateLivre() {
         if (this.livreFormUpdate.valid && this.selectedLivre) {
-            const updatedLivre = {
+            const idAuteur = this.authService.getCurrentUser()?.id;
+
+            if (!idAuteur) {
+                this.messageService.showError('Session invalide');
+                return;
+            }
+
+            const updatedLivre: Livre = {
                 ...this.livreFormUpdate.value,
-                auteur: {
-                    id: this.selectedLivre.auteur.id
-                }
+                id: this.selectedLivre.id,
+                auteurId: idAuteur
             };
 
             this.livreService.updateLivre(this.selectedLivre.id, updatedLivre).subscribe({
@@ -188,12 +208,15 @@ export class AuteurDashComponent implements OnInit {
                     this.messageService.showSuccess('Livre mis à jour avec succès');
                     this.loadLivres();
                     this.editModalVisible = false;
+                    this.livreFormUpdate.reset();
                 },
                 error: (error) => {
                     console.error('Erreur lors de la mise à jour:', error);
                     this.messageService.showError('Erreur lors de la mise à jour du livre');
                 }
             });
+        } else {
+            this.messageService.showError('Veuillez remplir tous les champs requis');
         }
     }
 

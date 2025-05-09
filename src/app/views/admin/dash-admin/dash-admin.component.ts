@@ -12,6 +12,9 @@ import { UserService } from '../../../core/services/userService/user.service';
 import { AuteurService } from '../../../core/services/auteurService/auteur.service';
 import { LivreService } from '../../../core/services/livreService/livre.service';
 import { MessageService } from '../../../core/services/messageService/message.service';
+import { ConfirmationService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-dash-admin',
@@ -26,69 +29,37 @@ import { MessageService } from '../../../core/services/messageService/message.se
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    ChartModule
-  ]
+    ChartModule,
+    DialogModule,
+    ConfirmDialogModule
+  ],
+  providers: [ConfirmationService]
 })
 export class DashAdminComponent implements OnInit {
-onGlobalFilter($event: Event) {
-throw new Error('Method not implemented.');
-}
     // Variables
     tabMembres: any[] = [];
     tabAuteurs: any[] = [];
     tabLivres: any[] = [];
     chartData: any;
     chartOptions: any;
+    viewModalVisible: boolean = false;
+    selectedAuteur: any = null;
+    globalFilter: string = '';
 
     private membreService = inject(UserService);
     private messageService = inject(MessageService);
     private auteurService = inject(AuteurService);
     private livreService = inject(LivreService);
 
+    constructor(
+        private confirmationService: ConfirmationService
+    ) {}
+
     ngOnInit() {
         this.initChart();
-        this.loadDashboardData();
+        this.loadLivresAndAuteurs();
     }
 
-    private loadDashboardData(): void {
-        // Chargement des livres
-        this.livreService.getLivres().subscribe({
-            next: (livres) => {
-                this.tabLivres = livres;
-                this.updateChartData();
-            },
-            error: (error) => {
-                console.error('Erreur lors du chargement des livres:', error);
-                this.messageService.showError('Erreur lors du chargement des livres');
-            }
-        });
-
-        // Chargement des auteurs
-        this.auteurService.getAuteurs().subscribe({
-            next: (auteurs) => {
-                this.tabAuteurs = auteurs;
-                this.updateChartData();
-            },
-            error: (error) => {
-                console.error('Erreur lors du chargement des auteurs:', error);
-                this.messageService.showError('Erreur lors du chargement des auteurs');
-            }
-        });
-
-        // Chargement des membres
-        this.membreService.getUsers().subscribe({
-            next: (membres: any) => {
-                this.tabMembres = membres;
-                this.updateChartData();
-            },
-            error: (error: any) => {
-                console.error('Erreur lors du chargement des membres:', error);
-                this.messageService.showError('Erreur lors du chargement des membres');
-            }
-        });
-    }
-
-    // Initialisation du graphique
     private initChart() {
         const documentStyle = getComputedStyle(document.documentElement);
 
@@ -150,6 +121,81 @@ throw new Error('Method not implemented.');
                     ]
                 }]
             };
+        }
+    }
+
+    loadLivresAndAuteurs() {
+        // Charger d'abord les auteurs
+        this.auteurService.getAuteurs().subscribe({
+            next: (auteurs) => {
+                this.tabAuteurs = auteurs;
+
+                // Puis charger les livres
+                this.livreService.getLivres().subscribe({
+                    next: (livres) => {
+                        this.tabLivres = livres;
+
+                        // Associer les livres à chaque auteur
+                        this.tabAuteurs = this.tabAuteurs.map(auteur => ({
+                            ...auteur,
+                            livres: this.tabLivres.filter(livre => livre.auteurId === auteur.id)
+                        }));
+
+                        // Mettre à jour les statistiques
+                        this.updateChartData();
+                    },
+                    error: (error) => {
+                        console.error('Erreur lors de la récupération des livres:', error);
+                        this.messageService.showError('Erreur lors de la récupération des livres');
+                    }
+                });
+            },
+            error: (error) => {
+                console.error('Erreur lors de la récupération des auteurs:', error);
+                this.messageService.showError('Erreur lors de la récupération des auteurs');
+            }
+        });
+    }
+
+    voirDetails(auteur: any) {
+        this.selectedAuteur = {
+            ...auteur,
+            livres: this.tabLivres.filter(livre => livre.auteurId === auteur.id)
+        };
+        this.viewModalVisible = true;
+    }
+
+    supprimerAuteur(auteur: any) {
+        this.confirmationService.confirm({
+            message: `Êtes-vous sûr de vouloir supprimer l'auteur ${auteur.prenom} ${auteur.nom} ?`,
+            header: 'Confirmation de suppression',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.auteurService.deleteAuteur(auteur.id).subscribe({
+                    next: () => {
+                        this.messageService.showSuccess('Auteur supprimé avec succès');
+                        this.loadLivresAndAuteurs();
+                    },
+                    error: (error) => {
+                        console.error('Erreur lors de la suppression:', error);
+                        this.messageService.showError('Erreur lors de la suppression');
+                    }
+                });
+            }
+        });
+    }
+
+    closeViewModal() {
+        this.viewModalVisible = false;
+        this.selectedAuteur = null;
+    }
+
+    onGlobalFilter(event: any) {
+        this.globalFilter = event.target.value;
+        const table = document.querySelector('p-table');
+        if (table) {
+            // @ts-ignore
+            table.filterGlobal(this.globalFilter, 'contains');
         }
     }
 }

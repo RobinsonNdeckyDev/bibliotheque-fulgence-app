@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/authService/auth.service';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from '../../../core/services/messageService/message.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +18,7 @@ export class LoginComponent {
 
     private fb = inject(FormBuilder);
     private router = inject(Router);
-    private toastr = inject(ToastrService);
+    private messageService = inject(MessageService);
     private authService = inject(AuthService);
 
 
@@ -49,12 +49,12 @@ export class LoginComponent {
             await this.router.navigate(['/login']);
             }
 
-            this.toastr.success('Connexion réussie avec succés');
+            this.messageService.showSuccess('Connexion réussie avec succés');
             // console.log("success login");
 
         },
         error: (error) => {
-            this.toastr.error('Erreur survenue lors de la connexion');
+            this.messageService.showError('Erreur survenue lors de la connexion');
             console.error(error);
             // this.router.navigate(['/login']);
         }

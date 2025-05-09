@@ -54,7 +54,7 @@ export class LivreService {
             `Bearer ${token}`
         );
 
-        return this.httpClient.post<Livre>(
+        return this.httpClient.post<any>(
             `${this.apiUrl}/livres/create-livre`,
             livre,
             { headers }
@@ -85,7 +85,7 @@ export class LivreService {
     deleteLivre(id: number) {
         const token = localStorage.getItem('token');
 
-        if (!this.authService.isAuteur()) {
+        if (!this.authService.isAuteur() && !this.authService.isAdmin() && !this.authService.isSuperAdmin()) {
             throw new Error(
                 'Vous devez être un auteur pour effectuer cette action.'
             );

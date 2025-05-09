@@ -10,7 +10,7 @@ import { throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class AuteurService {
-    
+
     // URL de base de l'API
     private apiUrl = `${environment.apiEndpoint}`;
 

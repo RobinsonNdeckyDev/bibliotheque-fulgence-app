@@ -9,21 +9,21 @@
     align-items: center;
 }
 
-.login-biblio::before {
+/* .login-biblio::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(44, 62, 80, 0.288); /* Overlay semi-transparent avec la couleur primary */
+    background: rgba(44, 62, 80, 0.288); /* Overlay semi-transparent avec la couleur primary
     z-index: 1;
 }
 
 .login-biblio > div:not(.absolute) {
     z-index: 2;
     position: relative;
-}
+} */
 
 input:disabled {
     background-color: var(--accent);

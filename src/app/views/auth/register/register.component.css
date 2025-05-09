@@ -1,0 +1,22 @@
+.login-biblio {
+    background-image: url('/assets/banners/biblio2.jpg');
+    background-size: cover;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+input:disabled {
+    background-color: var(--accent);
+    cursor: not-allowed;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
