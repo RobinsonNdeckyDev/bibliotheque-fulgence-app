@@ -72,6 +72,7 @@ src/
 │       ├── admin/      # Zone administrateur
 │       ├── auth/       # Login/Register
 │       └── client/     # Zone auteur
+│   ├── BD/bibliotheque_db           # fichier db à importer dans xampp
 ├── assets/            # Images, fichiers statiques
 └── environments/      # Configuration par environnement
 ```
