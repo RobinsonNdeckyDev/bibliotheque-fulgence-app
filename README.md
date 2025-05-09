@@ -1,59 +1,112 @@
-# BibliothequeFulgenceApp
+# Bibliothèque Fulgence - Application Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+Application web Angular permettant la gestion d'une bibliothèque avec système d'authentification et différents rôles utilisateurs (admin, auteur, etc.).
 
-## Development server
+## 🚀 Fonctionnalités
 
-To start a local development server, run:
+- **Authentification**
+  - Login/Logout sécurisé
+  - Gestion des rôles (SUPER_ADMIN, ADMIN, AUTEUR)
+  - Protection des routes avec guards
+  - Intercepteur HTTP pour gestion des tokens
 
+- **Dashboard Admin**
+  - Vue d'ensemble statistique
+  - Gestion des auteurs
+  - Gestion du catalogue de livres
+  - Graphiques et tableaux de bord
+
+- **Espace Auteur** 
+  - Gestion de ses propres livres
+  - Statistiques personnalisées
+  - Mise à jour de son profil
+
+## 🛠️ Technologies utilisées
+
+- Angular 19.2
+- PrimeNG 19.1 (UI Components)
+- TailwindCSS
+- Bootstrap Icons
+- Chart.js
+- NgRx Toastr
+
+## 📋 Prérequis
+
+- Node.js >= 18
+- Angular CLI >= 19.2
+- API Backend en cours d'exécution
+
+## ⚙️ Installation
+
+1. Cloner le repository
+```bash
+git clone https://github.com/your-username/bibliotheque-fulgence-app.git
+```
+
+2. Installer les dépendances
+```bash
+cd bibliotheque-fulgence-app
+npm install
+```
+
+3. Configuration
+- Copier `src/environments/environment.example.ts` vers `src/environments/environment.ts`
+- Modifier l'URL de l'API dans `environment.ts`
+
+4. Lancer l'application en développement
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+L'application sera accessible à l'adresse `http://localhost:4200`
 
-## Code scaffolding
+## 🏗️ Structure du projet
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```
+src/
+├── app/
+│   ├── core/           # Services, guards, interceptors
+│   ├── layouts/        # Templates de mise en page
+│   ├── shared/         # Composants réutilisables
+│   └── views/          # Pages principales
+│       ├── admin/      # Zone administrateur
+│       ├── auth/       # Login/Register
+│       └── client/     # Zone auteur
+├── assets/            # Images, fichiers statiques
+└── environments/      # Configuration par environnement
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🔧 Scripts disponibles
 
+- `npm start` : Lance le serveur de développement
+- `npm run build` : Crée une version de production
+- `npm test` : Lance les tests unitaires
+- `npm run lint` : Vérifie le code avec ESLint
+
+## 🤝 Contribution
+
+1. Forker le projet
+2. Créer une branche pour votre fonctionnalité
 ```bash
-ng generate --help
+git checkout -b feature/AmazingFeature
 ```
-
-## Building
-
-To build the project run:
-
+3. Commiter vos changements
 ```bash
-ng build
+git commit -m 'Add some AmazingFeature'
 ```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+4. Pusher sur la branche
 ```bash
-ng test
+git push origin feature/AmazingFeature
 ```
+5. Ouvrir une Pull Request
 
-## Running end-to-end tests
+## 🔗 API Backend
 
-For end-to-end (e2e) testing, run:
+Cette application se connecte à une API REST développée avec Spring Boot. 
+Le repository du backend est disponible ici : https://github.com/RobinsonNdeckyDev/api-biblio-fulgence-app.git
 
-```bash
-ng e2e
-```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🙏 Remerciements
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- PrimeNG pour leur excellente bibliothèque de composants
+- La communauté Angular pour leur support
